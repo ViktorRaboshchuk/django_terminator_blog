@@ -25,7 +25,7 @@ SECRET_KEY = '5@0ga99qj92&nc+=7wb&ym)mjo2#l-vb##cq-$2+207_9mznh$'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['dj-terminator-blog.herokuapp.com', '127.0.0.1']
+ALLOWED_HOSTS = ['django-terminator-blog.herokuapp.com', '127.0.0.1']
 
 
 # Application definition
