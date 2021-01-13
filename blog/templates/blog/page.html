@@ -1,0 +1,44 @@
+{% extends 'blog/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% include 'blog/header.html' %}
+ <!-- Main Content -->
+  <div class="container">
+        <h2>{{post.title}}</h2>
+        <br>
+        <img src="{{ post.photo.url  }}"  align="left" style="margin: 0px 20px 0px 0px;"><p>{{post.text|safe}}</p>
+      <div class="be-comment-block">
+            <!-- comments -->
+           <h3 class="comments-title">Comments ({{comments.count}})</h3>
+            {% for comment in comments %}
+                <div class="be-comment">
+                    <span class="be-comment-name">{{ comment.name }}</span>
+                    <span class="be-comment-time">
+                    {{ comment.created_on }}
+                    </span>
+                    <p class="be-comment-text">
+                        {{ comment.body }}
+                    </p>
+                </div>
+            {% endfor %}
+            <form method="post">
+                {% csrf_token %}
+                <div class="row">
+                  <div class="col-6">
+                    {{ comment_form.name|as_crispy_field }}
+                  </div>
+                  <div class="col-6">
+                    {{ comment_form.email|as_crispy_field }}
+                  </div>
+                </div>
+                {{ comment_form.body|as_crispy_field }}
+
+                <button class="btn btn-dark" type="submit">Submit</button>
+            </form>
+
+      </div>
+</div>
+{% include 'blog/footer.html' %}
+{% endblock %}
+
+

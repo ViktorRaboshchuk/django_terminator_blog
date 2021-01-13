@@ -1,0 +1,76 @@
+{% extends 'blog/base.html' %}
+
+{% load static %}
+<body>
+{% block content %}
+{% include 'blog/header.html' %}
+  <!-- Main Content -->
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        {% for post in page_obj %}
+        <div class="post-preview">
+            <h2 class="post-title">
+                <a href="{% url 'page' post.id %}">{{post.title}}</a>
+            </h2>
+            <p class="post-meta">
+              {{post.text|truncatewords:90|safe}}
+            </p>
+        </div>
+        {% endfor %}
+          <br><br>
+        <!-- Pager -->
+<!--Pagination-->
+    <nav aria-label="Page navigation example">
+        <ul class="justify-content-center pagination">
+        {% if page_obj.has_previous %}
+          <li class="page-item ">
+            <a class="page-link button_color" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+          </li>
+        {% else %}
+          <li class="page-item disabled">
+            <a class="page-link button_color" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+          </li>
+        {% endif %}
+
+        {% if movies.number|add:'-4' > 1 %}
+            <li class="page-item"><a class="page-link button_color" href="?page={{ page_obj.number|add:'-5' }}">&hellip;</a></li>
+        {% endif %}
+
+        {% for i in page_obj.paginator.page_range %}
+            {% if page_obj.number == i %}
+            <li class="active page-item" aria-current="page">
+              <span class="page-link button_color">
+                {{ i }}
+                <span class="sr-only">(current)</span>
+              </span>
+            </li>
+            {% elif i > page_obj.number|add:'-5' and i < page_obj.number|add:'5' %}
+                 <li class="page-item"><a class="page-link button_color" href="?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.paginator.num_pages > page_obj.number|add:'4' %}
+           <li class="page-item "><a class="page-link button_color" href="?page={{ page_obj.number|add:'5' }}">&hellip;</a></li>
+        {% endif %}
+
+        {% if page_obj.has_next %}
+          <li class="page-item">
+            <a class="page-link button_color" href="?page={{ page_obj.next_page_number }}">Next</a>
+          </li>
+        {% else %}
+          <li class="page-item disabled">
+            <a class="page-link button_color" href="#" tabindex="-1" aria-disabled="true">Next</a>
+          </li>
+        {% endif %}
+      </ul>
+    </nav>
+    <!--end of Pagination-->
+      </div>
+    </div>
+  </div>
+
+  <hr>
+{% include 'blog/footer.html' %}
+{% endblock %}
+</body>

@@ -1,0 +1,99 @@
+{% extends 'blog/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% include 'blog/header.html' %}
+<body>
+  <div class="main-content">
+    <!-- Page content -->
+    <div class="container-fluid mt--7">
+      <div class="row">
+        <div class="col-xl-12 order-xl-1">
+          <div class="card bg-secondary shadow">
+            <div class="card-header bg-white border-0">
+              <div class="row align-items-center">
+                <div class="col-8">
+                  <h3 class="mb-0">Hey,{{user.username}} </h3>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <form method="post" enctype="multipart/form-data">
+                <h6 class="heading-small mb-4">User information</h6>
+                <div class="pl-lg-4">
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group focused">
+                          {{user_form.username|as_crispy_field }}
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                          {{user_form.email|as_crispy_field }}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group focused">
+                          {{user_form.first_name|as_crispy_field }}
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="form-group focused">
+                          {{user_form.last_name|as_crispy_field }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <hr class="my-4">
+                <!-- Address -->
+                <h6 class="heading-small mb-4">Contact information</h6>
+                <div class="pl-lg-4">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="form-group focused">
+                          {{profile_form.address|as_crispy_field }}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-4">
+                      <div class="form-group focused">
+                             {{profile_form.city|as_crispy_field }}
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <div class="form-group focused">
+                          {{profile_form.country|as_crispy_field }}
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                          {{profile_form.postal|as_crispy_field }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {% csrf_token %}
+                <hr class="my-4">
+<!--               <p><input type="submit" value="Save changes"></p>-->
+                <button class="btn btn-dark" type="submit">Save changes</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+    <footer class="footer">
+        <div class="row align-items-center justify-content-xl-between">
+          <div class="col-xl-6 m-auto text-center">
+            <div class="copyright">
+                <h1><strong><a href="{% url 'logout' %}">Logout</a></strong></h1></a> by Skynet Team
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+{% include 'blog/footer.html' %}
+{% endblock %}

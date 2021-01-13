@@ -1,0 +1,10 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+{% include 'blog/header.html' %}
+<div class="container">
+  <p>Logged out!</p>
+  <p>Click here to login again:  <strong><a href="{% url 'login'%}">Login</a></strong></p>
+</div>
+{% include 'blog/footer.html' %}
+{% endblock %}
