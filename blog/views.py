@@ -6,6 +6,7 @@ from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from blog.forms import CommentForm, UserEditForm, ProfileEditForm, CreateUserForm
 from blog.models import Post, Profile
+from blog.utils import valid
 
 
 def index(request):
@@ -23,26 +24,21 @@ def post(request, pk):
     post = Post.objects.get(id=pk)
     comments = post.comments.all().order_by('-created_on')
     new_comment = None
-    print(request.user.username)
     if request.user.is_authenticated:
-        if request.method == 'POST':
-            comment_form = CommentForm(request=request,data=request.POST)
-            if comment_form.is_valid():
-
-                #Create comment object but not save to DB yet
-                new_comment = comment_form.save(commit=False)
-
-                #Assign current post to comment
-                new_comment.post = post
-
-                #Save comment to DB
-                new_comment.save()
-                # #Show clear form
-                # comment_form = CommentForm()
-        else:
-            comment_form = CommentForm(request=request,readonly_form=True)
+        comment_form = CommentForm(request=request,readonly_form=True)
     else:
-        comment_form = CommentForm(request=request)
+        comment_form = CommentForm(request=request, readonly_form=False)
+
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            comment_form = CommentForm(request=request, data=request.POST)
+            valid(comment_form, post)
+            return redirect('/')
+        comment_form = CommentForm(request=request,data=request.POST)
+        valid(comment_form, post)
+        return redirect('/')
+    # else:
+    #     comment_form = CommentForm(request=request)
 
     context = {'post': post, 'comments': comments, 'new_comment': new_comment, 'comment_form': comment_form}
     return render(request, 'blog/page.html', context=context)
@@ -71,6 +67,8 @@ def profile(request):
 
 def register(request):
     form = CreateUserForm()
+    new_user = None
+    profile = None
     if request.method == 'POST':
         form = CreateUserForm(request.POST)
         if form.is_valid():
@@ -81,10 +79,11 @@ def register(request):
             # Save the User object
             new_user.save()
             profile = Profile.objects.create(user=new_user)
-            return render(request, 'blog/registration.html', {'new_user':new_user, 'profile':profile})
 
-    context = {'form': form}
-    return render(request, 'blog/registration.html', context=context)
+    return render(request, 'blog/registration.html', {'form':form, 'new_user':new_user, 'profile':profile})
+
+    # context = {'form': form}
+    # return render(request, 'blog/registration.html', context=context)
 
 
 def login_view(request):
