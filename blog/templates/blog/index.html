@@ -14,7 +14,7 @@
                 <a href="{% url 'page' post.id %}">{{post.title}}</a>
             </h2>
             <p class="post-meta">
-              {{post.text|truncatewords:90|safe}}
+              {{post.text|truncatechars_html:190|safe}}
             </p>
         </div>
         {% endfor %}
