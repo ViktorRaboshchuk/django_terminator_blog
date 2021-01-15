@@ -11,14 +11,14 @@ class CommentForm(forms.ModelForm):
     READONLY_FIELDS = ('name', 'email')
 
     def __init__(self, *args, **kwargs):
-        self.readonly_form = kwargs.pop('readonly_form')
+        readonly_form = kwargs.pop('readonly_form')
         self.request = kwargs.pop("request")
         super(CommentForm, self).__init__(*args, **kwargs)
         if self.request.user.is_authenticated:
             self.fields['name'].initial = self.request.user.username
             self.fields['email'].initial = self.request.user.email
 
-        if self.readonly_form:
+        if readonly_form:
             for field in self.READONLY_FIELDS:
                 self.fields[field].widget.attrs['readonly'] = True
 
@@ -37,7 +37,7 @@ class ProfileEditForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = '__all__'
-        exclude = ('user', 'email','first_name','last_name')
+        exclude = ('user',)
 
 
 class CreateUserForm(UserCreationForm):

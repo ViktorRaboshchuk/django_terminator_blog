@@ -24,17 +24,14 @@ def post(request, pk):
     post = Post.objects.get(id=pk)
     comments = post.comments.all().order_by('-created_on')
     new_comment = None
-    if request.user.is_authenticated:
-        comment_form = CommentForm(request=request,readonly_form=True)
-    else:
-        comment_form = CommentForm(request=request, readonly_form=False)
+    comment_form = CommentForm(request=request, readonly_form=False)
 
     if request.method == 'POST':
         if request.user.is_authenticated:
-            comment_form = CommentForm(request=request, data=request.POST)
+            comment_form = CommentForm(request=request, data=request.POST, readonly_form=True)
             valid(comment_form, post)
             return redirect('/')
-        comment_form = CommentForm(request=request,data=request.POST)
+        comment_form = CommentForm(request=request, data=request.POST, readonly_form=False)
         valid(comment_form, post)
         return redirect('/')
     # else:
