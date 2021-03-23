@@ -141,30 +141,30 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 #S3 BUCKETS CONFIG
 
-AWS_ACCESS_KEY_ID = 'AKIA2RWA7JA7YHJ6IUHH'
-AWS_SECRET_ACCESS_KEY = '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'
-AWS_STORAGE_BUCKET_NAME = 'termintor-bucket'
-AWS_S3_FILE_OVERWRITE = False
-AWS_DEFAULT_ACL = None
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# AWS_ACCESS_KEY_ID = 'AKIA2RWA7JA7YHJ6IUHH'
+# AWS_SECRET_ACCESS_KEY = '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'
+# AWS_STORAGE_BUCKET_NAME = 'termintor-bucket'
+# AWS_S3_FILE_OVERWRITE = False
+# AWS_DEFAULT_ACL = None
+# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
-AWS_S3_OBJECT_PARAMETERS = {
-    'CacheControl': 'max-age=86400',
-}
-AWS_LOCATION = 'static'
-AWS_S3_REGION_NAME = 'eu-central-1' #change to your region
-AWS_S3_SIGNATURE_VERSION = 's3v4'
-# STATICFILES_DIRS = [
-#     os.path.join(BASE_DIR, 'blog/static'),
-# ]
+# AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+# AWS_S3_OBJECT_PARAMETERS = {
+#     'CacheControl': 'max-age=86400',
+# }
+# AWS_LOCATION = 'static'
+# AWS_S3_REGION_NAME = 'eu-central-1' #change to your region
+# AWS_S3_SIGNATURE_VERSION = 's3v4'
 
-STATIC_URL = AWS_S3_CUSTOM_DOMAIN + '/static/'
-# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'data/') # 'data' is my media folder
-MEDIA_URL = AWS_S3_CUSTOM_DOMAIN + '/media/'
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static')
+]
 
+
+MEDIA_URL = '/images/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 X_FRAME_OPTIONS = 'SAMEORIGIN'

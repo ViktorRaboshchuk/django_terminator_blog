@@ -4,41 +4,75 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
+from django.views.generic import ListView, DetailView
+
 from blog.forms import CommentForm, UserEditForm, ProfileEditForm, CreateUserForm
-from blog.models import Post, Profile
+from blog.models import Post, Profile, Comment
 from blog.utils import valid
 
 
-def index(request):
-    posts = Post.objects.all().order_by('-title')
-    paginator = Paginator(posts, 3) # Show 3 contacts per page.
+# def index(request):
+#     posts = Post.objects.all().order_by('-title')
+#     paginator = Paginator(posts, 3) # Show 3 contacts per page.
+#
+#     page_number = request.GET.get('page')
+#     page_obj = paginator.get_page(page_number)
+#
+#     context = {'posts': posts, 'page_obj': page_obj}
+#     return render(request, 'blog/index.html', context=context)
 
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+class MoviesList(ListView):
+    paginate_by = 3
+    template_name = 'blog/index.html'
 
-    context = {'posts': posts, 'page_obj': page_obj}
-    return render(request, 'blog/index.html', context=context)
+    def get_queryset(self):
+        posts = Post.objects.all().order_by('-title')
+        return posts
 
 
-def post(request, pk):
-    post = Post.objects.get(id=pk)
-    comments = post.comments.all().order_by('-created_on')
-    new_comment = None
-    comment_form = CommentForm(request=request, readonly_form=False)
+# def post(request, pk):
+#     post = Post.objects.get(id=pk)
+#     comments = post.comments.all().order_by('-created_on')
+#     new_comment = None
+#     comment_form = CommentForm(request=request, readonly_form=False)
+#
+#     if request.method == 'POST':
+#         if request.user.is_authenticated:
+#             comment_form = CommentForm(request=request, data=request.POST, readonly_form=True)
+#             valid(comment_form, post)
+#             return redirect('/')
+#     # else:
+#     #     comment_form = CommentForm(request=request)
+#
+#     context = {'post': post, 'comments': comments, 'new_comment': new_comment, 'comment_form': comment_form}
+#     return render(request, 'blog/post_detail.html', context=context)
 
-    if request.method == 'POST':
-        if request.user.is_authenticated:
-            comment_form = CommentForm(request=request, data=request.POST, readonly_form=True)
-            valid(comment_form, post)
-            return redirect('/')
-        comment_form = CommentForm(request=request, data=request.POST, readonly_form=False)
-        valid(comment_form, post)
-        return redirect('/')
-    # else:
-    #     comment_form = CommentForm(request=request)
+class MovieDetailView(DetailView):
+    model = Post
+    form_class = CommentForm
+    template_name = 'blog/post_detail.html'
 
-    context = {'post': post, 'comments': comments, 'new_comment': new_comment, 'comment_form': comment_form}
-    return render(request, 'blog/page.html', context=context)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+
+        comments = Comment.objects.filter(post=self.get_object()).order_by('-created_on')
+        context['comments'] = comments
+        if self.request.user.is_authenticated:
+            context['comment_form'] = self.form_class(instance=self.get_object())
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        comment_form = self.form_class(request.POST)
+        if comment_form.is_valid():
+            # Create comment object but not save to DB yet
+            new_comment = comment_form.save(commit=False)
+            # Assign current post to comment
+            new_comment.post = self.get_object()
+            # Save comment to DB
+            new_comment.save()
+
+        return self.get(self, request, *args, **kwargs)
 
 
 def about(request):

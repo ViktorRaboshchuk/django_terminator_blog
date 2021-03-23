@@ -7,8 +7,10 @@ from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
-    path('', views.index, name='home'),
-    path('page/<int:pk>/', views.post, name='page'),
+    # path('', views.index, name='home'),
+    path('', views.MoviesList.as_view(), name='home'),
+    # path('page/<int:pk>/', views.post, name='page'),
+    path('page/<int:pk>/', views.MovieDetailView.as_view(), name='page'),
     path('about/', views.about, name='about'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
@@ -16,5 +18,4 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     path('registration/', views.register, name='register')
 
-]
-# + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
