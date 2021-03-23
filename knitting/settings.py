@@ -41,8 +41,7 @@ INSTALLED_APPS = [
     'blog',
 
     'crispy_forms',
-    'django_summernote',
-    'storages',
+    'django_summernote'
 
 ]
 
@@ -99,9 +98,9 @@ DATABASES = {
 # DATABASE_URL
 #postgres://terminator:123ewqasdcxz@database-1.cuh0d3wso2nf.eu-central-1.rds.amazonaws.com:5432/demo_term
 
-import dj_database_url
-db_from_env = dj_database_url.config(conn_max_age=500)
-DATABASES['default'].update(db_from_env)
+# import dj_database_url
+# db_from_env = dj_database_url.config(conn_max_age=500)
+# DATABASES['default'].update(db_from_env)
 
 
 # Password validation
