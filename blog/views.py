@@ -83,22 +83,40 @@ def about(request):
     return render(request, 'blog/about.html')
 
 
-@login_required(login_url='/login/')
-def profile(request):
-    if request.method == 'POST':
-        print(request.POST)
+# @login_required(login_url='/login/')
+# def profile(request):
+#     if request.method == 'POST':
+#         print(request.POST)
+#         user_form = UserEditForm(instance=request.user, data=request.POST)
+#         profile_form = ProfileEditForm(instance=request.user.profile, data=request.POST)
+#         if user_form.is_valid() and profile_form.is_valid():
+#             user_form.save()
+#             profile_form.save()
+#     else:
+#         # print(request.user.profile)
+#         user_form = UserEditForm(instance=request.user)
+#         profile_form = ProfileEditForm(instance=request.user.profile)
+#
+#     context = {'user_form': user_form, 'profile_form': profile_form}
+#     return render(request, 'blog/profile.html', context=context)
+
+class ProfileView(View):
+    template_name = 'blog/profile.html'
+
+    def get(self, request, *args, **kwargs):
+        user_form = UserEditForm(instance=request.user)
+        profile_form = ProfileEditForm(instance=request.user.profile)
+        return render(request, self.template_name, {'user_form': user_form, 'profile_form': profile_form})
+
+    def post(self, request, *args, **kwargs):
         user_form = UserEditForm(instance=request.user, data=request.POST)
         profile_form = ProfileEditForm(instance=request.user.profile, data=request.POST)
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
-    else:
-        # print(request.user.profile)
-        user_form = UserEditForm(instance=request.user)
-        profile_form = ProfileEditForm(instance=request.user.profile)
+            return HttpResponseRedirect('/profile/')
 
-    context = {'user_form': user_form, 'profile_form': profile_form}
-    return render(request, 'blog/profile.html', context=context)
+        return render(request, self.template_name, {'user_form': user_form, 'profile_form': profile_form})
 
 
 class UserRegistration(CreateView):

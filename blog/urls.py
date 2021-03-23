@@ -15,7 +15,8 @@ urlpatterns = [
     # path('login/', views.login_view, name='login'),
     # path('logout/', views.logout_view, name='logout'),
     path('summernote/', include('django_summernote.urls')),
-    path('profile/', views.profile, name='profile'),
+    # path('profile/', views.profile, name='profile'),
+    path('profile/', views.ProfileView.as_view(), name='profile'),
     # path('registration/', views.register, name='register')
     path('registration/', views.UserRegistration.as_view(), name='register')
 
