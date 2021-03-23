@@ -12,10 +12,14 @@ urlpatterns = [
     # path('page/<int:pk>/', views.post, name='page'),
     path('page/<int:pk>/', views.MovieDetailView.as_view(), name='page'),
     path('about/', views.about, name='about'),
-    path('login/', views.login_view, name='login'),
-    path('logout/', views.logout_view, name='logout'),
+    # path('login/', views.login_view, name='login'),
+    # path('logout/', views.logout_view, name='logout'),
     path('summernote/', include('django_summernote.urls')),
     path('profile/', views.profile, name='profile'),
     path('registration/', views.register, name='register')
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+urlpatterns += [
+    path('accounts/', include('django.contrib.auth.urls')),
+]

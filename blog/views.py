@@ -4,12 +4,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
+from django.views import View
 from django.views.generic import ListView, DetailView
 
 from blog.forms import CommentForm, UserEditForm, ProfileEditForm, CreateUserForm
 from blog.models import Post, Profile, Comment
 from blog.utils import valid
-
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # def index(request):
 #     posts = Post.objects.all().order_by('-title')
@@ -117,19 +118,14 @@ def register(request):
     # return render(request, 'blog/registration.html', context=context)
 
 
-def login_view(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect('/')
-
-    context = {}
-    return render(request, 'blog/login.html', context=context)
-
-
-def logout_view(request):
-    logout(request)
-    return redirect('/login')
+# def login_view(request):
+#     if request.method == 'POST':
+#         username = request.POST['username']
+#         password = request.POST['password']
+#         user = authenticate(request, username=username, password=password)
+#         if user is not None:
+#             login(request, user)
+#             return redirect('/')
+#
+#     context = {}
+#     return render(request, 'blog/login.html', context=context)
