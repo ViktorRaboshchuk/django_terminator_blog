@@ -16,7 +16,8 @@ urlpatterns = [
     # path('logout/', views.logout_view, name='logout'),
     path('summernote/', include('django_summernote.urls')),
     path('profile/', views.profile, name='profile'),
-    path('registration/', views.register, name='register')
+    # path('registration/', views.register, name='register')
+    path('registration/', views.UserRegistration.as_view(), name='register')
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

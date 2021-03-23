@@ -3,9 +3,11 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView
 
 from blog.forms import CommentForm, UserEditForm, ProfileEditForm, CreateUserForm
 from blog.models import Post, Profile, Comment
@@ -21,6 +23,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 #
 #     context = {'posts': posts, 'page_obj': page_obj}
 #     return render(request, 'blog/index.html', context=context)
+
 
 class MoviesList(ListView):
     paginate_by = 3
@@ -85,11 +88,12 @@ def profile(request):
     if request.method == 'POST':
         print(request.POST)
         user_form = UserEditForm(instance=request.user, data=request.POST)
-        profile_form = ProfileEditForm(instance=request.user.profile, data=request.POST, files=request.FILES)
+        profile_form = ProfileEditForm(instance=request.user.profile, data=request.POST)
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
     else:
+        # print(request.user.profile)
         user_form = UserEditForm(instance=request.user)
         profile_form = ProfileEditForm(instance=request.user.profile)
 
@@ -97,22 +101,39 @@ def profile(request):
     return render(request, 'blog/profile.html', context=context)
 
 
-def register(request):
-    form = CreateUserForm()
-    new_user = None
-    profile = None
-    if request.method == 'POST':
-        form = CreateUserForm(request.POST)
-        if form.is_valid():
-            # Create a new user object but avoid saving it yet
-            new_user = form.save(commit=False)
-            # Set the chosen password
-            new_user.set_password(form.cleaned_data['password1'])
-            # Save the User object
-            new_user.save()
-            profile = Profile.objects.create(user=new_user)
+class UserRegistration(CreateView):
+    form_class = CreateUserForm
+    success_url = reverse_lazy('login')
+    template_name = 'registration/registration.html'
 
-    return render(request, 'blog/registration.html', {'form':form, 'new_user':new_user, 'profile':profile})
+    def get_initial(self):
+        initial = super(UserRegistration, self).get_initial()
+        return initial
+
+    def form_valid(self, form):
+        """Force the user to request.user"""
+        self.new_user = form.save()
+        self.new_user.save()
+        Profile.objects.create(user=self.new_user)
+
+        return super(UserRegistration, self).form_valid(form)
+
+# def register(request):
+#     form = CreateUserForm()
+#     new_user = None
+#     profile = None
+#     if request.method == 'POST':
+#         form = CreateUserForm(request.POST)
+#         if form.is_valid():
+#             # Create a new user object but avoid saving it yet
+#             new_user = form.save(commit=False)
+#             # Set the chosen password
+#             new_user.set_password(form.cleaned_data['password1'])
+#             # Save the User object
+#             new_user.save()
+#             profile = Profile.objects.create(user=new_user)
+#
+#     return render(request, 'registration/registration.html', {'form':form, 'new_user':new_user, 'profile':profile})
 
     # context = {'form': form}
     # return render(request, 'blog/registration.html', context=context)
@@ -129,3 +150,8 @@ def register(request):
 #
 #     context = {}
 #     return render(request, 'blog/login.html', context=context)
+
+
+# def logout_view(request):
+#     logout(request)
+#     return redirect('/login')
