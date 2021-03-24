@@ -124,10 +124,6 @@ class UserRegistration(CreateView):
     success_url = reverse_lazy('login')
     template_name = 'registration/registration.html'
 
-    def get_initial(self):
-        initial = super(UserRegistration, self).get_initial()
-        return initial
-
     def form_valid(self, form):
         """Force the user to request.user"""
         self.new_user = form.save()
